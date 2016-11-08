@@ -1,0 +1,71 @@
+#!/bin/bash
+<%
+## Set sane defaults
+if (is.null(resources$modules))
+  resources$modules = character(0L)
+if (is.null(resources$ncpus))
+    resources$ncpus = 1L
+use.mpi = (resources$pm.backend %??% "default") == "mpi"
+
+## Check variables
+resources$walltime = asInt(resources$walltime, lower = 60L, upper = 3600L * 672L)
+resources$memory = asInt(resources$memory, lower = 100L, upper = 64L * 1024L)
+resources$ncpus = asInt(resources$ncpus, lower = 1L)
+assertCharacter(resources$modules, any.missing = FALSE)
+if (is.null(resources$R)) {
+  resources$R = "R/3.3.1-gcc48-base"
+} else {
+  assertString(resources$R)
+}
+if (!is.null(resources$type))
+  assertString(resources$type)
+if (resources$memory > 15000)
+  resources$type = "quad"
+
+## first string of queue, selected by walltime
+walltimes = 3600L * c(1L, 8L, 48L, 672L)
+queue = c("short", "med", "long", "ultralong")[wf(resources$walltime <= walltimes)]
+modules = paste0(c("binutils/2.25", "gcc/4.8.5", "openblas/0.2.17", resources$R), collapse = " ")
+if (use.mpi)
+  modules = c(modules, "openmpi")
+
+## very ugly hack because we cannot log to data (nobackup) filesystem on lido,
+## only home fs is available
+## unfortunately there seems to be no generic solution
+## does log path start with /data/?
+log.file = log.file
+if (length(grep("^/data/", log.file)) > 0L) {
+  ## strip that
+  log.file = substr(log.file, 7L, nchar(log.file))
+  ## find next forward slash
+  i = regexpr("/", log.file)
+  if (i != -1) {
+    ## this must be "user": e.g. /data/bischl/...
+    user = substr(log.file, 1L, i-1L)
+    ## put together
+    log.file = sprintf("/home/%s/nobackup%s", user, substr(log.file, i, nchar(log.file)))
+  }
+}
+-%>
+
+#PBS -N <%= job.hash %>
+#PBS -o <%= log.file %>
+#PBS -l walltime=<%= resources$walltime %>,nodes=<%= if (use.mpi) resources$ncpus else 1 %>:ppn=<%= if (use.mpi) 1 else resources$ncpus %><%= if (!is.null(resources$type)) paste0(":", resources$type) %>,vmem=<%= resources$memory %>M
+#PBS -q <%= queue %>
+#PBS -j oe
+
+## setup modules
+source /sysdata/shared/sfw/Modules/default/init/bash
+module add <%= modules %>
+
+## create our own temp dir and clean it up later, lido does not do this automatically
+mkdir /scratch/${USER}-${PBS_JOBID}
+export TMPDIR=/scratch/${USER}-${PBS_JOBID}
+
+## export value of DEBUGME environemnt var to slave
+export DEBUGME=<%= Sys.getenv("DEBUGME") %>
+
+## run R
+cd "<%= %>"
+<%= if (use.mpi) "mpirun -np 1 " else "" %>Rscript -e 'batchtools::doJobCollection("<%= uri %>")'
+rm -rf /scratch/${USER}-${PBS_JOBID}
