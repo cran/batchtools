@@ -10,19 +10,7 @@ auto_increment = function(ids, n = 1L) {
 }
 
 ustamp = function() {
-  round(as.numeric(Sys.time(), 4L))
-}
-
-npath = function(path, must.work = TRUE) {
-  if (stri_startswith_fixed(path, "~")) {
-    # do not call normalizePath, we do not want to expand this paths relative to home
-    if (must.work && !file.exists(path))
-      stopf("File '%s' not found", path)
-    if (testOS("windows"))
-      path = stri_replace_all_fixed(path, "\\", "/")
-    return(path)
-  }
-  normalizePath(path, winslash = "/", mustWork = must.work)
+  round(as.numeric(Sys.time()), 4L)
 }
 
 names2 = function (x, missing.val = NA_character_) {
@@ -37,9 +25,17 @@ insert = function(x, y) {
   x[order(names2(x))]
 }
 
+file.remove.safely = function(x) {
+  file.remove(x[file.exists(x)])
+
+  while(any(i <- file.exists(x))) {
+    Sys.sleep(0.5)
+    file.remove(x[i])
+  }
+}
+
 writeRDS = function(object, file) {
-  if (file.exists(file))
-    file.remove(file)
+  file.remove.safely(file)
   saveRDS(object, file = file)
   while(!file.exists(file)) Sys.sleep(0.5)
   invisible(TRUE)
@@ -139,7 +135,7 @@ stri_trunc = function(str, length, append = "") {
 }
 
 Rscript = function() {
-  file.path(R.home("bin"), ifelse(testOS("windows"), "Rscript.exe", "Rscript"))
+  fp(R.home("bin"), ifelse(testOS("windows"), "Rscript.exe", "Rscript"))
 }
 
 getSeed = function(start.seed, id) {
@@ -147,17 +143,6 @@ getSeed = function(start.seed, id) {
     start.seed - .Machine$integer.max + id
   else
     start.seed + id
-}
-
-with_seed = function(seed, expr) {
-  if (!is.null(seed)) {
-    if (!exists(".Random.seed", .GlobalEnv))
-      set.seed(NULL)
-    state = get(".Random.seed", .GlobalEnv)
-    set.seed(seed)
-    on.exit(assign(".Random.seed", state, envir = .GlobalEnv))
-  }
-  eval.parent(expr)
 }
 
 chsetdiff = function(x, y) {

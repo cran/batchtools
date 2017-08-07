@@ -1,6 +1,6 @@
 Package: batchtools
 Title: Tools for Computation on Batch Systems
-Version: 0.9.3
+Version: 0.9.4
 Authors@R: c(
     person("Michel", "Lang", NULL, "michellang@gmail.com", role = c("cre", "aut")),
     person("Bernd", "Bischl", NULL, "bernd_bischl@gmx.de", role = "aut"),
@@ -25,17 +25,17 @@ BugReports: https://github.com/mllg/batchtools/issues
 NeedsCompilation: yes
 ByteCompile: yes
 Depends: R (>= 3.0.0), data.table (>= 1.9.8)
-Imports: backports (>= 1.0.4), base64url (>= 1.1), brew, checkmate (>=
-        1.8.2), digest (>= 0.6.9), parallel, progress (>= 1.1.1), R6,
-        rappdirs, stats, stringi, utils
+Imports: backports (>= 1.1.0), base64url (>= 1.1), brew, checkmate (>=
+        1.8.3), digest (>= 0.6.9), parallel, progress (>= 1.1.1), R6,
+        rappdirs, stats, stringi, utils, withr (>= 2.0.0)
 Suggests: debugme, e1071, knitr, parallelMap, ranger, rmarkdown, rpart,
-        snow, testthat
+        snow, testthat, tibble
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
-Packaged: 2017-04-21 20:49:07 UTC; michel
+Packaged: 2017-08-07 17:54:13 UTC; michel
 Author: Michel Lang [cre, aut],
   Bernd Bischl [aut],
   Dirk Surmann [ctb]
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-04-21 22:50:18 UTC
+Date/Publication: 2017-08-07 18:51:33 UTC

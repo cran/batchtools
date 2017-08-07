@@ -2,11 +2,13 @@
 #'
 #' @description
 #' These functions are used to find and filter jobs, depending on either their parameters (\code{findJobs} and
-#' \code{findExperiments}), their tags (\code{findTagged}), or their computational status (all other functions).
+#' \code{findExperiments}), their tags (\code{findTagged}), or their computational status (all other functions,
+#' see \code{\link{getStatus}} for an overview).
 #'
-#' For a summarizing overview over the status, see \code{\link{getStatus}}.
-#' Note that \code{findOnSystem} and \code{findExpired} are somewhat heuristic and may report misleading results,
-#' depending on the state of the system and the \code{\link{ClusterFunctions}} implementation.
+#' Note that \code{findQueued}, \code{findRunning}, \code{findOnSystem} and \code{findExpired} are somewhat heuristic
+#' and may report misleading results, depending on the state of the system and the \code{\link{ClusterFunctions}} implementation.
+#'
+#' See \code{\link{JoinTables}} for convenient set operations (unions, intersects, differences) on tables with job ids.
 #'
 #' @param expr [\code{expression}]\cr
 #'   Predicate expression evaluated in the job parameters.
@@ -15,6 +17,7 @@
 #' @template ids
 #' @template reg
 #' @return [\code{\link{data.table}}] with column \dQuote{job.id} containing matched jobs.
+#' @seealso \code{\link{getStatus}} \code{\link{JoinTables}}<`3`>
 #' @export
 #' @examples
 #' tmp = makeRegistry(file.dir = NA, make.default = FALSE)
@@ -71,7 +74,7 @@ findJobs = function(expr, ids = NULL, reg = getDefaultRegistry()) {
 #'   Predicate expression evaluated in the algorithm parameters.
 #' @param repls [\code{integer}]\cr
 #'   Whitelist of replication numbers. If not provided, all replications are matched.
-findExperiments = function(prob.name = NA_character_, prob.pattern = NA_character_, algo.name = NA_character_, algo.pattern = NA_character_, prob.pars, algo.pars, repls = NULL, ids = NULL, reg = getDefaultRegistry()) {
+findExperiments = function(ids = NULL, prob.name = NA_character_, prob.pattern = NA_character_, algo.name = NA_character_, algo.pattern = NA_character_, prob.pars, algo.pars, repls = NULL, reg = getDefaultRegistry()) {
   assertExperimentRegistry(reg, sync = TRUE)
   assertString(prob.name, na.ok = TRUE, min.chars = 1L)
   assertString(prob.pattern, na.ok = TRUE, min.chars = 1L)
@@ -268,5 +271,5 @@ findTagged = function(tags = character(0L), ids = NULL, reg = getDefaultRegistry
   assertCharacter(tags, any.missing = FALSE, pattern = "^[[:alnum:]_.]+$", min.len = 1L)
   tag = NULL
 
-  ids[unique(reg$tags[tag %in% tags, "job.id"], by = "job.id")]
+  ids[unique(reg$tags[tag %chin% tags, "job.id"], by = "job.id")]
 }

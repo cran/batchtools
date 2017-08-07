@@ -19,9 +19,10 @@
 \usage{
 findJobs(expr, ids = NULL, reg = getDefaultRegistry())
 
-findExperiments(prob.name = NA_character_, prob.pattern = NA_character_,
-  algo.name = NA_character_, algo.pattern = NA_character_, prob.pars,
-  algo.pars, repls = NULL, ids = NULL, reg = getDefaultRegistry())
+findExperiments(ids = NULL, prob.name = NA_character_,
+  prob.pattern = NA_character_, algo.name = NA_character_,
+  algo.pattern = NA_character_, prob.pars, algo.pars, repls = NULL,
+  reg = getDefaultRegistry())
 
 findSubmitted(ids = NULL, reg = getDefaultRegistry())
 
@@ -95,11 +96,13 @@ Return jobs which are tagged with any of the tags provided.}
 }
 \description{
 These functions are used to find and filter jobs, depending on either their parameters (\code{findJobs} and
-\code{findExperiments}), their tags (\code{findTagged}), or their computational status (all other functions).
+\code{findExperiments}), their tags (\code{findTagged}), or their computational status (all other functions,
+see \code{\link{getStatus}} for an overview).
 
-For a summarizing overview over the status, see \code{\link{getStatus}}.
-Note that \code{findOnSystem} and \code{findExpired} are somewhat heuristic and may report misleading results,
-depending on the state of the system and the \code{\link{ClusterFunctions}} implementation.
+Note that \code{findQueued}, \code{findRunning}, \code{findOnSystem} and \code{findExpired} are somewhat heuristic
+and may report misleading results, depending on the state of the system and the \code{\link{ClusterFunctions}} implementation.
+
+See \code{\link{JoinTables}} for convenient set operations (unions, intersects, differences) on tables with job ids.
 }
 \examples{
 tmp = makeRegistry(file.dir = NA, make.default = FALSE)
@@ -123,4 +126,7 @@ findTagged(tags = "my_tag", reg = tmp)
 # combine filter functions using joins
 # -> jobs which are not done and not tagged (using an anti-join):
 ajoin(findNotDone(reg = tmp), findTagged("my_tag", reg = tmp))
+}
+\seealso{
+\code{\link{getStatus}} \code{\link{JoinTables}}<`3`>
 }
