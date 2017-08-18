@@ -1,8 +1,9 @@
+# returns TRUE if the state possibly changed
 updateRegistry = function(reg = getDefaultRegistry()) { # nocov start
   "!DEBUG [updateRegistry]: Running updateRegistry"
   pv = packageVersion("batchtools")
   if (identical(pv, reg$version))
-    return(TRUE)
+    return(FALSE)
 
   if (is.null(reg$version) || reg$version < "0.9.0")
     stop("Your registry is too old.")
@@ -16,8 +17,9 @@ updateRegistry = function(reg = getDefaultRegistry()) { # nocov start
     }
 
     ### hotfix for log.file column
-    if ("log.file" %nin% names(reg$status)) {
-      reg$status$log.file = NA_character_
+    if ("log.file" %chnin% names(reg$status)) {
+      info("Adding column 'log.file'")
+      reg$status[, ("log.file") := rep(NA_character_, .N)]
     }
   }
 
@@ -41,6 +43,13 @@ updateRegistry = function(reg = getDefaultRegistry()) { # nocov start
       file.rename(fp(reg$file.dir, "algorithms", sprintf("%s.rds", digest(algo))), getAlgorithmURI(reg, algo))
   }
 
+  if (reg$version < "0.9.4-9001") {
+    if ("job.name" %chnin% names(reg$status)) {
+      info("Adding column 'job.name'")
+      reg$status[, ("job.name") := rep(NA_character_, .N)]
+    }
+  }
+
   reg$version = pv
-  saveRegistry(reg)
+  return(TRUE)
 } # nocov end
