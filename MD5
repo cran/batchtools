@@ -1,6 +1,6 @@
-66eaf9578799d79ccad8c4493a998aeb *DESCRIPTION
+379e54418ebea6c8c3e1db7d502ea754 *DESCRIPTION
 a78e380057981efbbde18365ac678a4f *NAMESPACE
-eb1561cffdfe41262ca32fe42e522ddc *NEWS.md
+24e0d7644a94e12ff0e88c0fe26fe331 *NEWS.md
 2d356e749e7025ed6c8a5494af3a5132 *R/Algorithm.R
 f407937d2f630ab1c2744b66e1b21e5d *R/ExperimentRegistry.R
 6eb6c3452478110bdaebe870b143e217 *R/Export.R
@@ -12,7 +12,7 @@ fbabef607e22d8eae8fff389bc168f95 *R/JobTables.R
 0fea26aa6de1edf5f05e0efb15802140 *R/Joins.R
 074eb66bb83c1411bdb0d55a00bbb1ea *R/Logs.R
 373da29d774fa61b6844d79494251447 *R/Problem.R
-30838c3467b9fb54000b4b1e648a4d49 *R/RDSReader.R
+fe76d9ac3526954d17ec7caa14d1fbcb *R/RDSReader.R
 89619dbd58127e406245fb8b6dfd2f73 *R/Registry.R
 8b1ee8334032d99bbd55f798c09a4055 *R/Tags.R
 1cd53294129d267d9f139f29dc1644b6 *R/Worker.R
@@ -70,8 +70,8 @@ bafedb7fec179503aa6af2a3fb54fedb *R/zzz.R
 5136671fecf5c30a7ace0b4071e17c78 *inst/CITATION
 13390ca3f777630e472ecca9b52a3563 *inst/bin/linux-helper
 1de9646d53ea3ad62c713d70d0b0daaa *inst/doc/batchtools.R
-7b9af522ee209dcd8d900d638c7a9d03 *inst/doc/batchtools.Rmd
-cbcbee8ecce6a283a2851d35442e96bc *inst/doc/batchtools.pdf
+913e255fca591cd8f12f6936779f3a04 *inst/doc/batchtools.Rmd
+7f0402762305d4c465a46651634e3aa0 *inst/doc/batchtools.pdf
 70cc2efdee5e5fba61c4e2bbccadb26f *inst/templates/lsf-simple.tmpl
 956868bb5190901e851ae15ab892a6cc *inst/templates/openlava-simple.tmpl
 a183a8a3d2ff65589498deb4fe753aef *inst/templates/sge-simple.tmpl
@@ -166,7 +166,7 @@ b292751a736c33ad4b386ba3a7a99a4c *tests/testthat/test_Results.R
 25ec81c490b2c848c2fce6317226f38b *tests/testthat/test_batchMap.R
 b8af40e2c8b147167f4ae5279ef7ef63 *tests/testthat/test_batchReduce.R
 b8111f5b4f683e28130ad6e40d146251 *tests/testthat/test_btlapply.R
-10daf557da039a2aa446018c2c216913 *tests/testthat/test_chunk.R
+7dbb5ac006c6536ccebfff73c9697e41 *tests/testthat/test_chunk.R
 622cdda8bca0d969014d7f04d002e4de *tests/testthat/test_chunkIds.R
 e95ac003a18a00fb460396a0203b06c0 *tests/testthat/test_convertIds.R
 ba297e77a9ab1e06520e51f46a03451e *tests/testthat/test_count.R
@@ -198,7 +198,7 @@ c7ee986f4d0dd60710cb931307f1cd77 *tests/testthat/test_summarizeExperiments.R
 f7208f4cf9b89061fa77e78d7552585b *tests/testthat/test_tags.R
 1a1d48066450f17d21d0eae0f8822494 *tests/testthat/test_testJob.R
 9d60c58bc37172e91a1b5be13a329c76 *tests/testthat/test_waitForJobs.R
-7b9af522ee209dcd8d900d638c7a9d03 *vignettes/batchtools.Rmd
+913e255fca591cd8f12f6936779f3a04 *vignettes/batchtools.Rmd
 a98f013026e5193936f275ad1ef56aac *vignettes/function_overview.pdf
 7bd5346afd47b0dac70556cc79cb2300 *vignettes/function_overview.png
 4c66119ba75de50ee6156b11ed2fe954 *vignettes/function_overview.tex
