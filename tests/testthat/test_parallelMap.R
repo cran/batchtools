@@ -1,7 +1,7 @@
 context("parallelMap")
 
 silent({
-  reg = makeRegistry(file.dir = NA, make.default = FALSE)
+  reg = makeTestRegistry()
   fun = function(i) { fun = function(i) i^2; parallelMap::parallelMap(fun, 1:i)}
   ids = batchMap(fun, i = 1:4, reg = reg)
 })
@@ -26,6 +26,21 @@ test_that("pm/socket", {
 
   submitAndWait(reg, ids = ids, resources = list(pm.backend = "socket", ncpus = 2))
   expect_equal(nrow(findDone(reg = reg)), 4L)
+})
+
+test_that("parallelMap works with batchtools", {
+  skip_if_not_installed("parallelMap")
+  skip_if_not(packageVersion("parallelMap") >= "1.4")
+  requireNamespace("parallelMap")
+
+  dir = reg$temp.dir %??% tempdir()
+  parallelMap::parallelStartBatchtools(storagedir = dir, show.info = FALSE)
+  dir = getOption("parallelMap.bt.reg.filedir")
+  res = parallelMap::parallelMap(function(x, y) x + y, x = 1:2, y = 1)
+  parallelMap::parallelStop()
+  if (dir.exists(dir))
+    unlink(dir, recursive = TRUE)
+  expect_equal(res, list(2, 3))
 })
 
 # test_that("pm/mpi", {

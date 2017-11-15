@@ -86,7 +86,7 @@ Default is \code{TRUE}.}
     \item{\code{cluster.functions} [cluster.functions]:}{Usually set in your \code{conf.file}. Set via a call to \code{\link{makeClusterFunctions}}. See example.}
     \item{\code{default.resources} [named list()]:}{Usually set in your \code{conf.file}. Named list of default resources.}
     \item{\code{max.concurrent.jobs} [integer(1)]:}{Usually set in your \code{conf.file}. Maximum number of concurrent jobs for a single user and current registry on the system.
-      \code{\link{submitJobs}} will try to respect this setting.}
+      \code{\link{submitJobs}} will try to respect this setting. The resource \dQuote{max.concurrent.jobs} has higher precedence.}
     \item{\code{defs} [data.table]:}{Table with job definitions (i.e. parameters).}
     \item{\code{status} [data.table]:}{Table holding information about the computational status. Also see \code{\link{getJobStatus}}.}
     \item{\code{resources} [data.table]:}{Table holding information about the computational resources used for the job. Also see \code{\link{getJobResources}}.}
@@ -113,6 +113,14 @@ Canceled jobs and jobs submitted multiple times may leave stray files behind.
 These can be swept using \code{\link{sweepRegistry}}.
 \code{\link{clearRegistry}} completely erases all jobs from a registry, including log files and results,
 and thus allows you to start over.
+}
+\details{
+Currently \pkg{batchtools} understands the following options set via the configuration file:
+\describe{
+  \item{\code{cluster.functions}:}{As returned by a constructor, e.g. \code{\link{makeClusterFunctionsSlurm}}.}
+  \item{\code{default.resources}:}{List of resources to use. Will be overruled by resources specified via \code{\link{submitJobs}}.}
+  \item{\code{temp.dir}:}{Path to directory to use for temporary registries.}
+}
 }
 \examples{
 tmp = makeRegistry(file.dir = NA, make.default = FALSE)

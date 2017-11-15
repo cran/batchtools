@@ -84,8 +84,8 @@ forest.wrapper = function(data, job, instance, ...) {
 addAlgorithm(name = "forest", fun = forest.wrapper)
 
 ## ------------------------------------------------------------------------
-getProblemIds()
-getAlgorithmIds()
+reg$problems
+reg$algorithms
 
 ## ----echo=FALSE----------------------------------------------------------
 knitr::include_graphics("tikz_prob_algo_simple.png", auto_pdf = TRUE)
@@ -121,11 +121,12 @@ waitForJobs()
 
 ## ------------------------------------------------------------------------
 reduce = function(res) list(mce = (sum(res) - sum(diag(res))) / sum(res))
-results = reduceResultsDataTable(fun = reduce)
+results = flatten(reduceResultsDataTable(fun = reduce))
 head(results)
 
 ## ------------------------------------------------------------------------
-tab = ijoin(getJobPars(), results)
+pars = flatten(getJobPars())
+tab = ijoin(pars, results)
 head(tab)
 
 ## ------------------------------------------------------------------------
