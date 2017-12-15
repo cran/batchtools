@@ -18,7 +18,7 @@
 #'     \item{started}{Time the job was started on the batch system as \code{\link[base]{POSIXct}}.}
 #'     \item{done}{Time the job terminated (successfully or with an error) as \code{\link[base]{POSIXct}}.}
 #'     \item{error}{Either \code{NA} if the job terminated successfully or the error message.}
-#'     \item{memory}{Estimate of the memory usage.}
+#'     \item{mem.used}{Estimate of the memory usage.}
 #'     \item{batch.id}{Batch ID as reported by the scheduler.}
 #'     \item{log.file}{Log file. If missing, defaults to \code{[job.hash].log}.}
 #'     \item{job.hash}{Unique string identifying the job or chunk.}
@@ -89,14 +89,12 @@ getJobPars = function(ids = NULL, reg = getDefaultRegistry()) {
   UseMethod("getJobPars", object = reg)
 }
 
-
 #' @export
 getJobPars.Registry = function(ids = NULL, reg = getDefaultRegistry()) {
   ids = convertIds(reg, ids)
   tab = mergedJobs(reg, ids, c("job.id", "job.pars"))
   setkeyv(tab, "job.id")[]
 }
-
 
 #' @export
 getJobPars.ExperimentRegistry = function(ids = NULL, reg = getDefaultRegistry()) {

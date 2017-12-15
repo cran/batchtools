@@ -50,17 +50,20 @@
 #'   (i.e., starting with \dQuote{~}). Note that some templates do not handle relative paths well.
 #' @param conf.file [\code{character(1)}]\cr
 #'   Path to a configuration file which is sourced while the registry is created.
-#'   For example, you can set cluster functions or default resources in it.
-#'   The script is executed inside the environment of the registry after the defaults for all variables are set,
-#'   thus you can set and overwrite slots, e.g. \code{default.resources = list(walltime = 3600)} to set default resources.
+#'   In the configuration file you can define how \pkg{batchtools} interacts with the system via \code{\link{ClusterFunctions}}.
+#'   Separating the configuration of the underlying host system from the R code allows to easily move computation to another site.
 #'
-#'   The file lookup defaults to a heuristic which first tries to read \dQuote{batchtools.conf.R} in the current working directory.
-#'   If not found, it looks for a configuration file \dQuote{config.R} in the OS dependent user configuration directory
-#'   as reported by via \code{rappdirs::user_config_dir("batchtools", expand = FALSE)} (e.g., on linux this
-#'   usually resolves to \dQuote{~/.config/batchtools/config.R}).
-#'   If this file is also not found, the heuristic finally tries to read the file \dQuote{.batchtools.conf.R} in the
-#'   home directory (\dQuote{~}).
-#'   Set to \code{character(0)} if you want to disable this heuristic.
+#'   The file lookup is implemented in \code{findConfFile} which returns the first file found of the following candidates:
+#'   \enumerate{
+#'    \item{File \dQuote{batchtools.conf.R} in the path specified by the environment variable \dQuote{R_BATCHTOOLS_SEARCH_PATH}.}
+#'    \item{File \dQuote{batchtools.conf.R} in the current working directory.}
+#'    \item{File \dQuote{config.R} in the OS dependent user configuration directory as reported by via \code{rappdirs::user_config_dir("batchtools", expand = FALSE)} (e.g., on linux this usually resolves to \dQuote{~/.config/batchtools/config.R}).}
+#'    \item{\dQuote{.batchtools.conf.R} in the home directory (\dQuote{~}).}
+#'   }
+#'   Set to \code{character(0)} if you want to suppress reading any configuration file.
+#'   If a configuration file is found, it gets sourced inside the environment of the registry after the defaults for all variables are set.
+#'   Therefore you can set and overwrite slots, e.g. \code{default.resources = list(walltime = 3600)} to set default resources or \dQuote{max.concurrent.jobs} to
+#'   limit the number of jobs allowed to run simultaneously on the system.
 #' @param packages [\code{character}]\cr
 #'   Packages that will always be loaded on each node.
 #'   Uses \code{\link[base]{require}} internally.
@@ -99,6 +102,7 @@
 #'     \item{\code{status} [data.table]:}{Table holding information about the computational status. Also see \code{\link{getJobStatus}}.}
 #'     \item{\code{resources} [data.table]:}{Table holding information about the computational resources used for the job. Also see \code{\link{getJobResources}}.}
 #'     \item{\code{tags} [data.table]:}{Table holding information about tags. See \link{Tags}.}
+#'     \item{\code{hash} [character(1)]:}{Unique hash which changes each time the registry gets saved to the file system. Can be utilized to invalidate the cache of \pkg{knitr}.}
 #'   }
 #' @aliases Registry
 #' @family Registry
@@ -151,7 +155,7 @@ makeRegistry = function(file.dir = "registry", work.dir = getwd(), conf.file = f
     started     = double(0L),
     done        = double(0L),
     error       = character(0L),
-    memory      = double(0L),
+    mem.used    = double(0L),
     resource.id = integer(0L),
     batch.id    = character(0L),
     log.file    = character(0L),
@@ -184,6 +188,7 @@ makeRegistry = function(file.dir = "registry", work.dir = getwd(), conf.file = f
   class(reg) = "Registry"
   saveRegistry(reg)
   reg$mtime = file.mtime(fp(reg$file.dir, "registry.rds"))
+  reg$hash = rnd_hash()
   info("Created registry in '%s' using cluster functions '%s'", reg$file.dir, reg$cluster.functions$name)
   if (make.default)
     batchtools$default.registry = reg
@@ -201,8 +206,28 @@ print.Registry = function(x, ...) {
   catf("  Writeable: %s", x$writeable)
 }
 
-assertRegistry = function(reg, writeable = FALSE, sync = FALSE, strict = FALSE, running.ok = TRUE) {
-  assertClass(reg, "Registry", ordered = strict)
+#' @title assertRegistry
+#'
+#' @description
+#' Assert that a given object is a \code{batchtools} registry.
+#' Additionally can sync the registry, check if it is writeable, or check if jobs are running.
+#' If any check fails, throws an error indicting the reason for the failure.
+#'
+#' @param reg [\code{\link{Registry}}]\cr
+#'   The object asserted to be a \code{Registry}.
+#' @param class [\code{character(1)}]\cr
+#'   If \code{NULL} (default), \code{reg} must only inherit from class \dQuote{Registry}.
+#'   Otherwise check that \code{reg} is of class \code{class}.
+#'   E.g., if set to \dQuote{Registry}, a \code{\link{ExperimentRegistry}} would not pass.
+#' @param writeable [\code{logical(1)}]\cr
+#'   Check if the registry is writeable.
+#' @param sync [\code{logical(1)}]\cr
+#'   Whether to sync the registry before writing.
+#' @param running.ok [\code{logical(1)}]\cr
+#'   If \code{FALSE} throw an error if jobs associated with the registry are currently running.
+#' @return \code{TRUE} invisibly.
+#' @export
+assertRegistry = function(reg, class = NULL, writeable = FALSE, sync = FALSE, running.ok = TRUE) {
   if (batchtools$debug) {
     if (!identical(key(reg$status), "job.id"))
       stop("Key of reg$job.id lost")
@@ -212,6 +237,15 @@ assertRegistry = function(reg, writeable = FALSE, sync = FALSE, strict = FALSE, 
       stop("Key of reg$resources lost")
   }
 
+  if (is.null(class)) {
+    assertClass(reg, "Registry")
+  } else {
+    assertString(class)
+    assertClass(reg, class, ordered = TRUE)
+  }
+  assertFlag(writeable)
+  assertFlag(sync)
+  assertFlag(running.ok)
 
   if (reg$writeable && !identical(reg$mtime, file.mtime(fp(reg$file.dir, "registry.rds")))) {
     warning("Registry has been altered since last read. Switching to read-only mode in this session.")
@@ -221,10 +255,11 @@ assertRegistry = function(reg, writeable = FALSE, sync = FALSE, strict = FALSE, 
   if (writeable && !reg$writeable)
     stop("Registry must be writeable")
 
-  if (sync || !running.ok) {
-    if (sync(reg))
-      saveRegistry(reg)
-  }
+  if (sync && !reg$writeable)
+    stop("Registry must be writeable to be synced")
+
+  if ((sync || !running.ok) && sync(reg))
+    saveRegistry(reg)
 
   if (!running.ok && nrow(.findOnSystem(reg = reg)) > 0L)
     stop("This operation is not allowed while jobs are running on the system")

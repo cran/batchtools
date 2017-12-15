@@ -43,13 +43,13 @@ doJobCollection.JobCollection = function(jc, output = NULL) {
     now = ustamp()
     updates = data.table(job.id = jc$jobs$job.id, started = now, done = now,
       error = stri_trunc(stri_trim_both(sprintf(msg, ...)), 500L, " [truncated]"),
-      memory = NA_real_, key = "job.id")
+      mem.used = NA_real_, key = "job.id")
     writeRDS(updates, file = fp(jc$file.dir, "updates", sprintf("%s.rds", jc$job.hash)))
     invisible(NULL)
   }
 
   # signal warnings immediately
-  local_options(c(warn = 1L))
+  local_options(list(warn = 1L))
 
   # setup output connection
   if (!is.null(output)) {
@@ -137,12 +137,12 @@ doJobCollection.JobCollection = function(jc, output = NULL) {
     job = getJob(jc, i, reader = reader)
     id = job$id
 
-    update = list(started = ustamp(), done = NA_integer_, error = NA_character_, memory = NA_real_)
+    update = list(started = ustamp(), done = NA_integer_, error = NA_character_, mem.used = NA_real_)
     catf("### [bt %s]: Starting job [batchtools job.id=%i]", now(), id)
     if (measure.memory) {
       gc(reset = TRUE)
       result = try(execJob(job))
-      update$memory = sum(gc()[, 6L])
+      update$mem.used = sum(gc()[, 6L])
     } else {
       result = try(execJob(job))
     }
@@ -173,7 +173,7 @@ UpdateBuffer = R6Class("UpdateBuffer",
     updates = NULL,
     next.update = NA_real_,
     initialize = function(ids) {
-      self$updates = data.table(job.id = ids, started = NA_real_, done = NA_real_, error = NA_character_, memory = NA_real_, written = FALSE, key = "job.id")
+      self$updates = data.table(job.id = ids, started = NA_real_, done = NA_real_, error = NA_character_, mem.used = NA_real_, written = FALSE, key = "job.id")
       self$next.update = Sys.time() + runif(1L, 60, 300)
     },
 

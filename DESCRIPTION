@@ -1,6 +1,6 @@
 Package: batchtools
 Title: Tools for Computation on Batch Systems
-Version: 0.9.7
+Version: 0.9.8
 Authors@R: c(
     person("Michel", "Lang", NULL, "michellang@gmail.com",
       role = c("cre", "aut"), comment = c(ORCID = "0000-0001-9754-0393")),
@@ -26,7 +26,7 @@ BugReports: https://github.com/mllg/batchtools/issues
 NeedsCompilation: yes
 ByteCompile: yes
 Depends: R (>= 3.0.0), data.table (>= 1.10.4)
-Imports: backports (>= 1.1.1), base64url (>= 1.1), brew, checkmate (>=
+Imports: backports (>= 1.1.2), base64url (>= 1.1), brew, checkmate (>=
         1.8.5), digest (>= 0.6.9), parallel, progress (>= 1.1.1), R6,
         rappdirs, stats, stringi, utils, withr (>= 2.0.0)
 Suggests: debugme, doParallel, doMPI, e1071, foreach,
@@ -34,10 +34,10 @@ Suggests: debugme, doParallel, doMPI, e1071, foreach,
         rpart, snow, testthat, tibble
 VignetteBuilder: knitr
 RoxygenNote: 6.0.1
-Packaged: 2017-11-15 14:15:32 UTC; lang
+Packaged: 2017-12-14 21:59:37 UTC; michel
 Author: Michel Lang [cre, aut] (0000-0001-9754-0393),
   Bernd Bischl [aut],
   Dirk Surmann [ctb]
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-11-15 21:39:48 UTC
+Date/Publication: 2017-12-15 13:16:20 UTC

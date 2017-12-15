@@ -34,17 +34,20 @@ makeRegistry(file.dir = "registry", work.dir = getwd(),
 
 \item{conf.file}{[\code{character(1)}]\cr
   Path to a configuration file which is sourced while the registry is created.
-  For example, you can set cluster functions or default resources in it.
-  The script is executed inside the environment of the registry after the defaults for all variables are set,
-  thus you can set and overwrite slots, e.g. \code{default.resources = list(walltime = 3600)} to set default resources.
+  In the configuration file you can define how \pkg{batchtools} interacts with the system via \code{\link{ClusterFunctions}}.
+  Separating the configuration of the underlying host system from the R code allows to easily move computation to another site.
 
-  The file lookup defaults to a heuristic which first tries to read \dQuote{batchtools.conf.R} in the current working directory.
-  If not found, it looks for a configuration file \dQuote{config.R} in the OS dependent user configuration directory
-  as reported by via \code{rappdirs::user_config_dir("batchtools", expand = FALSE)} (e.g., on linux this
-  usually resolves to \dQuote{~/.config/batchtools/config.R}).
-  If this file is also not found, the heuristic finally tries to read the file \dQuote{.batchtools.conf.R} in the
-  home directory (\dQuote{~}).
-  Set to \code{character(0)} if you want to disable this heuristic.}
+  The file lookup is implemented in \code{findConfFile} which returns the first file found of the following candidates:
+  \enumerate{
+   \item{File \dQuote{batchtools.conf.R} in the path specified by the environment variable \dQuote{R_BATCHTOOLS_SEARCH_PATH}.}
+   \item{File \dQuote{batchtools.conf.R} in the current working directory.}
+   \item{File \dQuote{config.R} in the OS dependent user configuration directory as reported by via \code{rappdirs::user_config_dir("batchtools", expand = FALSE)} (e.g., on linux this usually resolves to \dQuote{~/.config/batchtools/config.R}).}
+   \item{\dQuote{.batchtools.conf.R} in the home directory (\dQuote{~}).}
+  }
+  Set to \code{character(0)} if you want to suppress reading any configuration file.
+  If a configuration file is found, it gets sourced inside the environment of the registry after the defaults for all variables are set.
+  Therefore you can set and overwrite slots, e.g. \code{default.resources = list(walltime = 3600)} to set default resources or \dQuote{max.concurrent.jobs} to
+  limit the number of jobs allowed to run simultaneously on the system.}
 
 \item{packages}{[\code{character}]\cr
 Packages that will always be loaded on each node.
@@ -91,6 +94,7 @@ Default is \code{TRUE}.}
     \item{\code{status} [data.table]:}{Table holding information about the computational status. Also see \code{\link{getJobStatus}}.}
     \item{\code{resources} [data.table]:}{Table holding information about the computational resources used for the job. Also see \code{\link{getJobResources}}.}
     \item{\code{tags} [data.table]:}{Table holding information about tags. See \link{Tags}.}
+    \item{\code{hash} [character(1)]:}{Unique hash which changes each time the registry gets saved to the file system. Can be utilized to invalidate the cache of \pkg{knitr}.}
   }
 }
 \description{

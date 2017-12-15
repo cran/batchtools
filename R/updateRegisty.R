@@ -71,6 +71,33 @@ updateRegistry = function(reg = getDefaultRegistry()) { # nocov start
     }
   }
 
+  if (reg$version < "0.9.7-9001") {
+    if (inherits(reg, "ExperimentRegistry")) {
+      info("Updating problems")
+      for (id in reg$problems) {
+        uri = getProblemURI(reg, id)
+        p = readRDS(uri)
+        p$cache = FALSE
+        saveRDS(p, file = uri)
+      }
+    }
+  }
+
+  if (reg$version < "0.9.7-9002") {
+    info("Renaming memory column in data base")
+    setnames(reg$status, "memory", "mem.used")
+
+    info("Renaming memory column in update files")
+    fns = list.files(dir(reg, "updates"), full.names = TRUE)
+    updates = lapply(fns, function(fn) {
+      x = try(readRDS(fn), silent = TRUE)
+      if (is.error(x))
+        file.remove(x)
+      setnames(x, "memory", "mem.used")
+      saveRDS(x, file = fn)
+    })
+  }
+
   reg$version = pv
   return(TRUE)
 } # nocov end

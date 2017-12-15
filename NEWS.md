@@ -1,3 +1,12 @@
+# batchtools 0.9.8
+
+* Renamed column "memory" in the status table to "mem.used" to avoid name clashes with the resource specification.
+* Exported function `assertRegistry()`.
+* New function `unwrap()` as alias to `flatten()`.
+  The latter causes a name clash with package `purrr` and will be deprecated in a future version.
+* Registries now contain a unique hash which is updated each time the registry is altered.
+  Can be utilized to invalidate caches, e.g. the cache of knitr.
+
 # batchtools 0.9.7
 
 * Added a workaround for a test to be compatible with testthat v2.0.0.

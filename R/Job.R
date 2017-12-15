@@ -15,6 +15,11 @@ BaseJob = R6Class("BaseJob", cloneable = FALSE,
   ),
 
   active = list(
+    job.id = function() {
+      # alias for id. This is confusing not to have.
+      self$id
+    },
+
     external.dir = function() {
       path = fp(self$file.dir, "external", self$id)
       dir.create(path, recursive = TRUE, showWarnings = FALSE)
@@ -73,9 +78,20 @@ Experiment = R6Class("Experiment", cloneable = FALSE, inherit = BaseJob,
       if (!self$allow.access.to.instance)
         stop("You cannot access 'job$instance' in the problem generation or algorithm function")
       p = self$problem
+      if (p$cache) {
+        cache.file = getProblemCacheURI(self)
+        if (file.exists(cache.file)) {
+          result = try(readRDS(cache.file))
+          if (!inherits(result, "try-error"))
+            return(result)
+        }
+      }
       seed = if (is.null(p$seed)) self$seed else p$seed + self$repl - 1L
       wrapper = function(...) p$fun(job = self, data = p$data, ...)
-      with_seed(seed, do.call(wrapper, self$prob.pars, envir = .GlobalEnv))
+      result = with_seed(seed, do.call(wrapper, self$prob.pars, envir = .GlobalEnv))
+      if (p$cache)
+        writeRDS(result, file = cache.file)
+      return(result)
     }
   )
 )

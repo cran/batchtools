@@ -121,11 +121,11 @@ waitForJobs()
 
 ## ------------------------------------------------------------------------
 reduce = function(res) list(mce = (sum(res) - sum(diag(res))) / sum(res))
-results = flatten(reduceResultsDataTable(fun = reduce))
+results = unwrap(reduceResultsDataTable(fun = reduce))
 head(results)
 
 ## ------------------------------------------------------------------------
-pars = flatten(getJobPars())
+pars = unwrap(getJobPars())
 tab = ijoin(pars, results)
 head(tab)
 
