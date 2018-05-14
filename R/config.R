@@ -1,21 +1,25 @@
 findConfFile = function() {
   x = Sys.getenv("R_BATCHTOOLS_SEARCH_PATH")
   if (nzchar(x)) {
-    x = fp(x, "batchtools.conf.R")
-    if (file.exists(x))
-      return(normalizePath(x, winslash = "/"))
+    x = fs::path(x, "batchtools.conf.R")
+    if (fs::file_exists(x))
+      return(assertFileExists(fs::path_real(x), access = "r"))
   }
 
   x = "batchtools.conf.R"
-  if (file.exists(x))
-    return(normalizePath(x, winslash = "/"))
+  if (testFileExists(x, access = "r"))
+    return(fs::path_real(x))
 
-  x = fp(user_config_dir("batchtools", expand = FALSE), "config.R")
-  if (file.exists(x))
+  x = fs::path(user_config_dir("batchtools", expand = FALSE), "config.R")
+  if (testFileExists(x, access = "r"))
     return(x)
 
-  x = normalizePath(fp("~", ".batchtools.conf.R"), winslash = "/", mustWork = FALSE)
-  if (file.exists(x))
+  x = fs::path("~", ".batchtools.conf.R")
+  if (testFileExists(x, access = "r"))
+    return(fs::path_real(x))
+
+  x = fs::path(site_config_dir("batchtools"), "config.R")
+  if (testFileExists(x, access = "r"))
     return(x)
 
   return(character(0L))
@@ -24,7 +28,7 @@ findConfFile = function() {
 setSystemConf = function(reg, conf.file) {
   reg$cluster.functions = makeClusterFunctionsInteractive()
   reg$default.resources = list()
-  reg$temp.dir = tempdir()
+  reg$temp.dir = fs::path_temp()
 
   if (length(conf.file) > 0L) {
     assertString(conf.file)
@@ -33,9 +37,8 @@ setSystemConf = function(reg, conf.file) {
 
     assertClass(reg$cluster.functions, "ClusterFunctions")
     assertList(reg$default.resources, names = "unique")
-    if (!dir.exists(reg$temp.dir))
-      dir.create(reg$temp.dir, recursive = TRUE)
+    fs::dir_create(reg$temp.dir)
   } else {
-    info("No configuration file found")
+    info("No readable configuration file found")
   }
 }

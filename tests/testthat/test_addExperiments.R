@@ -3,7 +3,7 @@ context("addExperiments")
 test_that("addExperiments handles parameters correctly", {
   reg = makeTestExperimentRegistry()
   prob = addProblem(reg = reg, "p1", data = iris, fun = function(job, data, x, y, ...) stopifnot(is.numeric(x) && is.character(y)), seed = 42)
-  algo = addAlgorithm(reg = reg, "a1", fun = function(job, data, instance, a, b, ...) { print(str(a)); assertList(a, len = 1, names = "named"); assertDataFrame(b); } )
+  algo = addAlgorithm(reg = reg, "a1", fun = function(job, data, instance, a, b, ...) { print(str(a)); checkmate::assertList(a, len = 1, names = "named"); checkmate::assertDataFrame(b); } )
   prob.designs = list(p1 = data.table(x = 1:2, y = letters[1:2]))
   algo.designs = list(a1 = data.table(a = list(list(x = 1)), b = list(iris)))
   repls = 2
@@ -41,6 +41,7 @@ test_that("addExperiments / user provided designs", {
   repls = 1
   ids = addExperiments(reg = reg, prob.designs = prob.designs, algo.designs = algo.designs, combine = "bind")
   expect_data_table(ids, nrow = 9, key = "job.id")
+  tab = getJobPars(reg = reg)
   pars = unwrap(getJobPars(reg = reg))
   expect_set_equal(pars$problem, "p1")
   expect_set_equal(pars$algorithm, c("a1", "a2"))

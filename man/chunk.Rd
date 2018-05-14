@@ -6,7 +6,7 @@
 \alias{binpack}
 \title{Chunk Jobs for Sequential Execution}
 \usage{
-chunk(x, n.chunks = NULL, chunk.size = NULL)
+chunk(x, n.chunks = NULL, chunk.size = NULL, shuffle = TRUE)
 
 lpt(x, n.chunks = 1L)
 
@@ -29,6 +29,9 @@ Requested chunk size for each single chunk.
 For \code{chunk} this is the number of elements in \code{x}, for \code{binpack} the size
 is determined by the sum of values in \code{x}.
 Mutually exclusive with \code{n.chunks}.}
+
+\item{shuffle}{[\code{logical(1)}]\cr
+Shuffles the groups. Default is \code{TRUE}.}
 }
 \value{
 [\code{integer}] giving the chunk number for each element of \code{x}.
@@ -53,6 +56,7 @@ not exceed the upper limit provided by \code{chunk.size}.
 See examples of \code{\link{estimateRuntimes}} for an application of \code{binpack} and \code{lpt}.
 }
 \examples{
+\dontshow{ batchtools:::example_push_temp(2) }
 ch = chunk(1:10, n.chunks = 2)
 table(ch)
 
@@ -81,6 +85,8 @@ print(ids[, .N, by = chunk])
 ids[, chunk := chunk(job.id, n.chunks = 4)]
 print(ids[, .N, by = chunk])
 
+### Submit to batch system
+submitJobs(ids = ids, reg = tmp)
 
 # Grouped chunking
 tmp = makeExperimentRegistry(file.dir = NA, make.default = FALSE)
