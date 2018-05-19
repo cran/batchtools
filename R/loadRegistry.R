@@ -27,7 +27,7 @@ loadRegistry = function(file.dir, work.dir = NULL, conf.file = findConfFile(), m
   assertString(file.dir)
   assertDirectory(file.dir)
   assertString(work.dir, null.ok = TRUE)
-  assertCharacter(conf.file, any.missing = FALSE, max.len = 1L)
+  assertString(conf.file, na.ok = TRUE)
   assertFlag(make.default)
   assertFlag(writeable)
 
@@ -40,7 +40,7 @@ loadRegistry = function(file.dir, work.dir = NULL, conf.file = findConfFile(), m
         "You can inspect results and errors, but cannot add, remove, submit or alter jobs in any way.",
         "If you need write-access, re-load the registry with `loadRegistry([...], writeable = TRUE)`."
     ))
-  file.dir = path_real(file.dir)
+  file.dir = fs::path_abs(file.dir)
   reg = readRegistry(file.dir)
 
   # re-allocate stuff which has not been serialized
@@ -52,7 +52,7 @@ loadRegistry = function(file.dir, work.dir = NULL, conf.file = findConfFile(), m
   alloc.col(reg$resources, ncol(reg$resources))
   alloc.col(reg$tags, ncol(reg$tags))
   if (!is.null(work.dir))
-    reg$work.dir = path_real(work.dir)
+    reg$work.dir = fs::path_abs(work.dir)
   updated = updateRegistry(reg = reg)
 
   # try to load dependencies relative to work.dir

@@ -1,10 +1,12 @@
 ## ----include = FALSE, cache = FALSE--------------------------------------
 library(batchtools)
 options(batchtools.progress = FALSE, datatable.print.class = TRUE, batchtools.timestamps = FALSE)
-tmp_dir = fs::path(dirname(tempdir()), "batchtools-vignette")
-if (fs::dir_exists(tmp_dir))
-  fs::dir_delete(tmp_dir)
-fs::file_temp_push(fs::path(tmp_dir, letters))
+if (identical(Sys.getenv("IN_PKGDOWN"), "true")) {
+  tmp_dir = fs::path(dirname(tempdir()), "batchtools-vignette")
+  if (fs::dir_exists(tmp_dir))
+    fs::dir_delete(tmp_dir)
+  fs::file_temp_push(fs::path(tmp_dir, letters))
+}
 
 ## ---- message=FALSE------------------------------------------------------
 reg = makeRegistry(NA)
