@@ -60,7 +60,7 @@ Some resources' names are standardized and it is good practice to stick to the f
  \item{pp.size:}{Maximum size of the pointer protection stack, see \code{\link[base]{Memory}}.}
  \item{blas.threads:}{Number of threads to use for the BLAS backend. Used to set environment variables \dQuote{MKL_NUM_THREADS} and \dQuote{OPENBLAS_NUM_THREADS}. Can be passed as additional column as part of \code{ids} to set per-job resources.}
  \item{measure.memory:}{Enable memory measurement for jobs. Comes with a small runtime overhead.}
- \item{chunks.as.array.jobs:}{Execute chunks as array jobs.}
+ \item{chunks.as.arrayjobs:}{Execute chunks as array jobs.}
  \item{pm.backend:}{Start a \pkg{parallelMap} backend on the slave.}
  \item{foreach.backend:}{Start a \pkg{foreach} backend on the slave.}
  \item{clusters:}{Resource used for Slurm to select the set of clusters to run \code{sbatch}/\code{squeue}/\code{scancel} on.}
@@ -140,8 +140,37 @@ You have to do this manually via \code{\link[base]{library}} or let the registry
 }
 
 \examples{
-\dontshow{ batchtools:::example_push_temp(2) }
-### Example 1: Using memory measurement
+\dontshow{ batchtools:::example_push_temp(3) }
+### Example 1: Submit subsets of jobs
+tmp = makeRegistry(file.dir = NA, make.default = FALSE)
+
+# toy function which fails if x is even and an input file does not exists
+fun = function(x, fn) if (x \%\% 2 == 0 && !file.exists(fn)) stop("file not found") else x
+
+# define jobs via batchMap
+fn = tempfile()
+ids = batchMap(fun, 1:20, reg = tmp, fn = fn)
+
+# submit some jobs
+ids = 1:10
+submitJobs(ids, reg = tmp)
+waitForJobs(ids, reg = tmp)
+getStatus(reg = tmp)
+
+# create the required file and re-submit failed jobs
+file.create(fn)
+submitJobs(findErrors(ids, reg = tmp), reg = tmp)
+getStatus(reg = tmp)
+
+# submit remaining jobs which have not yet been submitted
+ids = findNotSubmitted(reg = tmp)
+submitJobs(ids, reg = tmp)
+getStatus(reg = tmp)
+
+# collect results
+reduceResultsList(reg = tmp)
+
+### Example 2: Using memory measurement
 tmp = makeRegistry(file.dir = NA, make.default = FALSE)
 
 # Toy function which creates a large matrix and returns the column sums
@@ -167,7 +196,7 @@ print(unwrap(info))
 # Combine job info with results -> each job is aggregated using mean()
 unwrap(ijoin(info, reduceResultsDataTable(fun = function(res) list(res = mean(res)), reg = tmp)))
 
-### Example 2: Multicore execution on the slave
+### Example 3: Multicore execution on the slave
 tmp = makeRegistry(file.dir = NA, make.default = FALSE)
 
 # Function which sleeps 10 seconds, i-times

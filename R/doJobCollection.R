@@ -30,8 +30,12 @@ doJobCollection = function(jc, output = NULL) {
 doJobCollection.character = function(jc, output = NULL) {
   obj = readRDS(jc)
   force(obj)
-  if (!batchtools$debug && !obj$array.jobs)
+  if (!batchtools$debug && !obj$array.jobs) {
     fs::file_delete(jc)
+    job = fs::path_ext_set(jc, "job")
+    if (fs::file_exists(job))
+      fs::file_delete(job)
+  }
   doJobCollection.JobCollection(obj, output = output)
 }
 
@@ -48,7 +52,9 @@ doJobCollection.JobCollection = function(jc, output = NULL) {
   }
 
   # signal warnings immediately
-  local_options(list(warn = 1L))
+  opts = options("warn")
+  options(warn = 1L)
+  on.exit(options(opts))
 
   # setup output connection
   if (!is.null(output)) {
@@ -125,6 +131,9 @@ doJobCollection.JobCollection = function(jc, output = NULL) {
   # setup memory measurement
   measure.memory = isTRUE(jc$resources$measure.memory)
   catf("### [bt%s]: Memory measurement %s", s, ifelse(measure.memory, "enabled", "disabled"))
+  if (measure.memory) {
+    memory.mult = c(if (.Machine$sizeof.pointer == 4L) 28L else 56L, 8L)
+  }
 
   # try to pre-fetch some objects from the file system
   reader = RDSReader$new(n.jobs > 1L)
@@ -141,7 +150,7 @@ doJobCollection.JobCollection = function(jc, output = NULL) {
     if (measure.memory) {
       gc(reset = TRUE)
       result = try(execJob(job))
-      update$mem.used = sum(gc()[, 6L])
+      update$mem.used = sum(gc()[, 6L] * memory.mult)
     } else {
       result = try(execJob(job))
     }

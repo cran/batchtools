@@ -45,7 +45,7 @@
 #'   Expected maximum latency of the file system, in seconds.
 #'   Set to a positive number for network file systems like NFS which enables more robust (but also more expensive) mechanisms to
 #'   access files and directories.
-#'   Usually safe to set to \code{NA} to disable the heuristic, e.g. if you are working on a local file system.
+#'   Usually safe to set to \code{0} to disable the heuristic, e.g. if you are working on a local file system.
 #' @param hooks [\code{list}]\cr
 #'   Named list of functions which will we called on certain events like \dQuote{pre.submit} or \dQuote{post.sync}.
 #'   See \link{Hooks}.
@@ -55,7 +55,7 @@
 #' @family ClusterFunctionsHelper
 makeClusterFunctions = function(name, submitJob, killJob = NULL, listJobsQueued = NULL, listJobsRunning = NULL,
   array.var = NA_character_, store.job.collection = FALSE, store.job.files = FALSE, scheduler.latency = 0,
-  fs.latency = NA_real_, hooks = list()) {
+  fs.latency = 0, hooks = list()) {
   assertList(hooks, types = "function", names = "unique")
   assertSubset(names(hooks), unlist(batchtools$hooks, use.names = FALSE))
 
@@ -69,7 +69,7 @@ makeClusterFunctions = function(name, submitJob, killJob = NULL, listJobsQueued 
       store.job.collection = assertFlag(store.job.collection),
       store.job.files = assertFlag(store.job.files),
       scheduler.latency = assertNumber(scheduler.latency, lower = 0),
-      fs.latency = assertNumber(fs.latency, lower = 0, na.ok = TRUE),
+      fs.latency = assertNumber(fs.latency, lower = 0),
       hooks = hooks),
     "ClusterFunctions")
 }
@@ -164,10 +164,9 @@ cfReadBrewTemplate = function(template, comment.string = NA_character_) {
 #' @description
 #' This function is only intended for use in your own cluster functions implementation.
 #'
-#' Calls brew silently on your template, any error will lead to an exception. If debug mode is
-#' enabled (via environment variable \dQuote{DEBUGME} set to \dQuote{batchtools}),
-#' the file is stored at the same place as the corresponding
-#' job file in the \dQuote{jobs}-subdir of your files directory, otherwise as \code{\link{tempfile}} on the local system.
+#' Calls brew silently on your template, any error will lead to an exception.
+#' The file is stored at the same place as the corresponding job file in the \dQuote{jobs}-subdir
+#' of your files directory.
 #'
 #' @template reg
 #' @param text [\code{character(1)}]\cr
@@ -180,10 +179,7 @@ cfReadBrewTemplate = function(template, comment.string = NA_character_) {
 #' @export
 cfBrewTemplate = function(reg, text, jc) {
   assertString(text)
-
-  path = if (batchtools$debug || reg$cluster.functions$store.job.files) fs::path(reg$file.dir, "jobs") else fs::path_temp()
-  fn = sprintf("%s.job", jc$job.hash)
-  outfile = fs::path(path, fn)
+  outfile = fs::path(dir(reg, "jobs"), sprintf("%s.job", jc$job.hash))
 
   parent.env(jc) = asNamespace("batchtools")
   on.exit(parent.env(jc) <- emptyenv())
@@ -192,7 +188,7 @@ cfBrewTemplate = function(reg, text, jc) {
   z = try(brew(text = text, output = outfile, envir = jc), silent = TRUE)
   if (is.error(z))
     stopf("Error brewing template: %s", as.character(z))
-  waitForFiles(path, fn, reg$cluster.functions$scheduler.latency)
+  waitForFile(outfile, reg$cluster.functions$fs.latency)
   return(outfile)
 }
 
@@ -279,7 +275,9 @@ getBatchIds = function(reg, status = "all") {
       tab = rbind(tab, data.table(batch.id = unique(x), status = "queued"))
   }
 
-  tab[batch.id %in% reg$status$batch.id]
+  submitted = done = batch.id = NULL
+  batch.ids = reg$status[!is.na(submitted) & is.na(done) & !is.na(batch.id), unique(batch.id)]
+  tab[batch.id %in% batch.ids]
 }
 
 
