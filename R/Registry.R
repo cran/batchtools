@@ -29,6 +29,7 @@
 #'   \item{\code{temp.dir}:}{Path to directory to use for temporary registries.}
 #'   \item{\code{sleep}:}{Custom sleep function. See \code{\link{waitForJobs}}.}
 #'   \item{\code{expire.after}:}{Number of iterations before treating jobs as expired in \code{\link{waitForJobs}}.}
+#'   \item{\code{compress}:}{Compression algorithm to use via \code{\link{saveRDS}}.}
 #' }
 #'
 #' @param file.dir [\code{character(1)}]\cr
@@ -83,7 +84,7 @@
 #'   Calls \code{\link[base]{load}} using the \code{\link[base]{.GlobalEnv}}.
 #' @param seed [\code{integer(1)}]\cr
 #'   Start seed for jobs. Each job uses the (\code{seed} + \code{job.id}) as seed.
-#'   Default is a random number in the range [1, \code{.Machine$integer.max/2}].
+#'   Default is a random integer between 1 and 32768
 #' @param make.default [\code{logical(1)}]\cr
 #'   If set to \code{TRUE}, the created registry is saved inside the package
 #'   namespace and acts as default registry. You might want to switch this
@@ -134,7 +135,7 @@ makeRegistry = function(file.dir = "registry", work.dir = getwd(), conf.file = f
   assertCharacter(source, any.missing = FALSE, min.chars = 1L)
   assertCharacter(load, any.missing = FALSE, min.chars = 1L)
   assertFlag(make.default)
-  seed = if (is.null(seed)) as.integer(runif(1L, 0, 32768)) else asCount(seed, positive = TRUE)
+  seed = if (is.null(seed)) as.integer(runif(1L, 1, 32768)) else asCount(seed, positive = TRUE)
 
   reg = new.env(parent = asNamespace("batchtools"))
   reg$file.dir = file.dir

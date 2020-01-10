@@ -5,10 +5,17 @@
 \alias{ExperimentRegistry}
 \title{ExperimentRegistry Constructor}
 \usage{
-makeExperimentRegistry(file.dir = "registry", work.dir = getwd(),
-  conf.file = findConfFile(), packages = character(0L),
-  namespaces = character(0L), source = character(0L),
-  load = character(0L), seed = NULL, make.default = TRUE)
+makeExperimentRegistry(
+  file.dir = "registry",
+  work.dir = getwd(),
+  conf.file = findConfFile(),
+  packages = character(0L),
+  namespaces = character(0L),
+  source = character(0L),
+  load = character(0L),
+  seed = NULL,
+  make.default = TRUE
+)
 }
 \arguments{
 \item{file.dir}{[\code{character(1)}]\cr
@@ -70,7 +77,7 @@ Calls \code{\link[base]{load}} using the \code{\link[base]{.GlobalEnv}}.}
 
 \item{seed}{[\code{integer(1)}]\cr
 Start seed for jobs. Each job uses the (\code{seed} + \code{job.id}) as seed.
-Default is a random number in the range [1, \code{.Machine$integer.max/2}].}
+Default is a random integer between 1 and 32768}
 
 \item{make.default}{[\code{logical(1)}]\cr
 If set to \code{TRUE}, the created registry is saved inside the package
@@ -98,7 +105,7 @@ addProblem(reg = tmp, "p1",
   fun = function(job, data, n, mean, sd, ...) rnorm(n, mean = mean, sd = sd))
 addAlgorithm(reg = tmp, "a1", fun = function(job, data, instance, ...) mean(instance))
 addAlgorithm(reg = tmp, "a2", fun = function(job, data, instance, ...) median(instance))
-ids = addExperiments(reg = tmp, list(p1 = CJ(n = c(50, 100), mean = -2:2, sd = 1:4)))
+ids = addExperiments(reg = tmp, list(p1 = data.table::CJ(n = c(50, 100), mean = -2:2, sd = 1:4)))
 
 # Overview over defined experiments:
 tmp$problems
