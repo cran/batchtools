@@ -116,7 +116,11 @@ lpt = function(x, n.chunks = 1L) {
   assertNumeric(x, lower = 0, any.missing = FALSE, finite = TRUE)
   assertCount(n.chunks, positive = TRUE)
 
-  .Call(c_lpt, as.numeric(x), order(x, decreasing = TRUE), as.integer(n.chunks))
+  x = as.double(x)
+  ord = order(x, decreasing = TRUE)
+  n.chunks = as.integer(n.chunks)
+
+  .Call(c_lpt, x, ord, n.chunks)
 }
 
 #' @rdname chunk
@@ -128,5 +132,9 @@ binpack = function(x, chunk.size = max(x)) {
   if (length(x) == 0L)
     return(integer(0L))
 
-  .Call(c_binpack, as.numeric(x), order(x, decreasing = TRUE), as.double(chunk.size))
+  x = as.double(x)
+  ord = order(x, decreasing = TRUE)
+  chunk.size = as.double(chunk.size)
+
+  .Call(c_binpack, x, ord, chunk.size)
 }

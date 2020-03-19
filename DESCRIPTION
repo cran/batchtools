@@ -1,6 +1,6 @@
 Package: batchtools
 Title: Tools for Computation on Batch Systems
-Version: 0.9.12
+Version: 0.9.13
 Authors@R: c(
     person("Michel", "Lang", NULL, "michellang@gmail.com",
       role = c("cre", "aut"), comment = c(ORCID = "0000-0001-9754-0393")),
@@ -37,10 +37,10 @@ Suggests: debugme, doParallel, doMPI, e1071, foreach, future,
         rpart, snow, testthat, tibble
 VignetteBuilder: knitr
 RoxygenNote: 7.0.2
-Packaged: 2020-01-10 12:29:39 UTC; lang
+Packaged: 2020-03-19 19:25:19 UTC; michel
 Author: Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),
   Bernd Bischl [aut],
   Dirk Surmann [ctb] (<https://orcid.org/0000-0003-0873-137X>)
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-01-10 16:30:07 UTC
+Date/Publication: 2020-03-19 23:00:02 UTC
