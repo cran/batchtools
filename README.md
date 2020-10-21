@@ -1,10 +1,9 @@
 # batchtools
 
-[![JOSS Publicatoin](http://joss.theoj.org/papers/10.21105/joss.00135/status.svg)](https://doi.org/10.21105/joss.00135)
-[![CRAN Status Badge](http://www.r-pkg.org/badges/version/batchtools)](https://cran.r-project.org/package=batchtools)
+[![JOSS Publicatoin](https://joss.theoj.org/papers/10.21105/joss.00135/status.svg)](https://doi.org/10.21105/joss.00135)
+[![CRAN Status Badge](https://www.r-pkg.org/badges/version/batchtools)](https://cran.r-project.org/package=batchtools)
 [![Build Status](https://travis-ci.org/mllg/batchtools.svg?branch=master)](https://travis-ci.org/mllg/batchtools)
 [![Build Status](https://ci.appveyor.com/api/projects/status/ypp14tiiqfhnv92k/branch/master?svg=true)](https://ci.appveyor.com/project/mllg/batchtools/branch/master)
-[![Coverage Status](https://img.shields.io/coveralls/mllg/batchtools.svg)](https://coveralls.io/r/mllg/batchtools?branch=master)
 
 As a successor of the packages [BatchJobs](https://github.com/tudo-r/BatchJobs) and [BatchExperiments](https://github.com/tudo-r/Batchexperiments), batchtools provides a parallel implementation of Map for high performance computing systems managed by schedulers like Slurm, Sun Grid Engine, OpenLava, TORQUE/OpenPBS, Load Sharing Facility (LSF) or Docker Swarm (see the setup section in the [vignette](https://mllg.github.io/batchtools/articles/batchtools.html)).
 
@@ -40,10 +39,10 @@ The [vignette](https://mllg.github.io/batchtools/articles/batchtools.html#migrat
 
 ## Resources
 * [NEWS](https://mllg.github.io/batchtools/news/)
-* [Function reference](https://mllg.github.io/batchtools/reference)
+* [Function reference](https://mllg.github.io/batchtools/reference/)
 * [Vignette](https://mllg.github.io/batchtools/articles/batchtools.html)
 * [JOSS Paper](https://doi.org/10.21105/joss.00135): Short paper on batchtools. Please cite this if you use batchtools.
-* [Paper on BatchJobs/BatchExperiments](http://www.jstatsoft.org/v64/i11): The described concept still holds for batchtools and most examples work analogously (see the [vignette](https://mllg.github.io/batchtools/articles/batchtools.html#migration) for differences between the packages).
+* [Paper on BatchJobs/BatchExperiments](https://www.jstatsoft.org/v64/i11): The described concept still holds for batchtools and most examples work analogously (see the [vignette](https://mllg.github.io/batchtools/articles/batchtools.html#migration) for differences between the packages).
 
 ## Citation
 Please cite the [JOSS paper](https://doi.org/10.21105/joss.00135) using the following BibTeX entry:

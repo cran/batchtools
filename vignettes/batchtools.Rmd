@@ -183,7 +183,7 @@ For background information, see [Wikipedia](https://en.wikipedia.org/wiki/Monte_
 
 First, a so-called registry object has to be created, which defines a directory where all relevant information, files and results of the computational jobs will be stored.
 There are two different types of registry objects: First, a regular [`Registry`](https://mllg.github.io/batchtools/reference/makeRegistry) which we will use in this example.
-Second, an [`ExperimentRegistry`](https://mllg.github.io/batchtools/reference/makeExperimentRegistry) which provides an alternative way to define computational jobs and thereby is tailored for a broad range of large scale computer experiments (see, for example, [this vignette](ExampleExperiment.html)).
+Second, an [`ExperimentRegistry`](https://mllg.github.io/batchtools/reference/makeExperimentRegistry) which provides an alternative way to define computational jobs and thereby is tailored for a broad range of large scale computer experiments.
 Here, we use a temporary registry which is stored in the temp directory of the system and gets automatically deleted if you close the R session.
 
 ```{r, message = FALSE}
@@ -255,7 +255,7 @@ We stick to a rather simple, but not unrealistic example to explain some further
 
 First, we create a registry, the central meta-data object which records technical details and the setup of the experiments.
 We use an [`ExperimentRegistry`](https://mllg.github.io/batchtools/reference/makeExperimentRegistry) where the job definition is split into creating problems and algorithms.
-See the paper on [BatchJobs and BatchExperiments](http://www.jstatsoft.org/article/view/v064i11) for a detailed explanation.
+See the paper on [BatchJobs and BatchExperiments](https://www.jstatsoft.org/article/view/v064i11) for a detailed explanation.
 Again, we use a temporary registry and make it the default registry.
 ```{r, message = FALSE}
 library(batchtools)
@@ -498,7 +498,7 @@ grepLogs(pattern = "simple", ignore.case = TRUE)
    Run jobs in the currently running session with [`testJob()`](https://mllg.github.io/batchtools/reference/testJob) to get a `traceback()`.
 6. Collect (partial) results. [`loadResult()`](https://mllg.github.io/batchtools/reference/loadResult) retrieves a single result from the file system.
    [`reduceResults()`](https://mllg.github.io/batchtools/reference/reduceResults) mimics `Reduce()` and allows to apply a function to many files in an iterative fashion.
-   [`reduceResultsList()`](https://mllg.github.io/batchtools/reference/reduceResultsList) and [`reduceResultsDataTable()`](https://mllg.github.io/batchtools/reference/reduceResultsDataTable) collect results into a `list` or `data.table`, respectively.
+   [`reduceResultsList()`](https://mllg.github.io/batchtools/reference/reduceResultsList) and [`reduceResultsDataTable()`](https://mllg.github.io/batchtools/reference/reduceResultsList) collect results into a `list` or `data.table`, respectively.
 
 ```{r,echo=FALSE}
 knitr::include_graphics("function_overview.png", auto_pdf = TRUE)
