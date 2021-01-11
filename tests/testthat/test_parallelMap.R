@@ -1,5 +1,3 @@
-context("parallelMap")
-
 silent({
   reg = makeTestRegistry()
   fun = function(i) { fun = function(i) i^2; parallelMap::parallelMap(fun, 1:i)}
@@ -9,7 +7,7 @@ silent({
 test_that("pm/multicore", {
   skip_on_os("windows")
   skip_if_not_installed("parallelMap")
-  skip_on_travis()
+  skip_on_ci()
   if (reg$cluster.functions$name %chin% c("Parallel", "Socket"))
     skip("Nested local parallelization not supported")
 
@@ -20,7 +18,7 @@ test_that("pm/multicore", {
 test_that("pm/socket", {
   skip_if_not_installed("parallelMap")
   skip_if_not_installed("snow")
-  skip_on_travis()
+  skip_on_ci()
   if (reg$cluster.functions$name %chin% c("Parallel", "Socket"))
     skip("Nested local parallelization not supported")
 
@@ -49,7 +47,7 @@ test_that("parallelMap works with batchtools", {
 #   skip_if_not_installed("parallelMap")
 #   skip_if_not_installed("snow")
 #   skip_if_not_installed("Rmpi")
-#   skip_on_travis()
+#   skip_on_ci()
 #   if (reg$cluster.functions$name %chin% c("Parallel", "Socket"))
 #     skip("Nested local parallelization not supported")
 

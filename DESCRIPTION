@@ -1,6 +1,6 @@
 Package: batchtools
 Title: Tools for Computation on Batch Systems
-Version: 0.9.14
+Version: 0.9.15
 Authors@R: c(
     person("Michel", "Lang", NULL, "michellang@gmail.com",
       role = c("cre", "aut"), comment = c(ORCID = "0000-0001-9754-0393")),
@@ -32,15 +32,15 @@ Imports: backports (>= 1.1.2), base64url (>= 1.1), brew, checkmate (>=
         1.8.5), data.table (>= 1.11.2), digest (>= 0.6.9), fs (>=
         1.2.0), parallel, progress (>= 1.1.1), R6, rappdirs, stats,
         stringi, utils, withr (>= 2.0.0)
-Suggests: debugme, doMPI, doParallel, e1071, foreach, future,
-        future.batchtools, knitr, parallelMap, ranger, rmarkdown, Rmpi,
+Suggests: debugme, doParallel, doMPI, e1071, foreach, future,
+        future.batchtools, knitr, parallelMap, ranger, rmarkdown,
         rpart, snow, testthat, tibble
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
-Packaged: 2020-10-21 09:28:43 UTC; lang
+Packaged: 2021-01-11 08:21:55 UTC; michel
 Author: Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),
   Bernd Bischl [aut],
   Dirk Surmann [ctb] (<https://orcid.org/0000-0003-0873-137X>)
 Maintainer: Michel Lang <michellang@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-10-21 20:50:03 UTC
+Date/Publication: 2021-01-11 12:40:03 UTC
