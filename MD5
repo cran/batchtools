@@ -1,6 +1,6 @@
-724a8ec883cbbac95ff9500f77ec709f *DESCRIPTION
+953077ff513575d7ba0259b0a053006c *DESCRIPTION
 fff95490a1aaea11cbd3677aa3becb25 *NAMESPACE
-d2dacbf96d884eca303b276a4e6a62c9 *NEWS.md
+33dfd6df150c80493e5938f74c42a565 *NEWS.md
 73ee8aa6814890a049796a489c7ca342 *R/Algorithm.R
 58caa9998340656afaca8ef0596ecae4 *R/ExperimentRegistry.R
 584bc4fe95c4295253fba54baa0a3ce6 *R/Export.R
@@ -27,7 +27,7 @@ ffc706907e449dad0a9d9ca7f7a92bac *R/clusterFunctions.R
 e728e7ded4bb5da8390fed1d7c354781 *R/clusterFunctionsDocker.R
 5b48b0f95ef0032cb4f83c94ee9b4a5c *R/clusterFunctionsInteractive.R
 98a78623528a94d5189456ca6e421675 *R/clusterFunctionsLSF.R
-f1f5f5ae858df5e8e606f1950f6b1d84 *R/clusterFunctionsMulticore.R
+b7a96160ee92bdf011d4325480c7e99c *R/clusterFunctionsMulticore.R
 925ab366e52219637af424362db95979 *R/clusterFunctionsOpenLava.R
 496641ea7a0fbd85c9f9efedea981400 *R/clusterFunctionsSGE.R
 01bced9930a3a5864de11b2991b17571 *R/clusterFunctionsSSH.R
@@ -67,12 +67,12 @@ cc8d6bb0d06e81d7cdc515cf6ebe6330 *R/testJob.R
 ee8d5a310def6b0a17d091c7ee39b579 *R/waitForJobs.R
 ec0dc6faa801e8629b218e62a3c9d6f1 *R/zzz.R
 6fcf881b38e7f4458a45764c21bc46a0 *README.md
-fe5f27c1baf7f72e7470c5ae1f0fd9b4 *build/vignette.rds
+24f8f1f2cfc6e70b05c2d433c7ee08d3 *build/vignette.rds
 ba4d69c3248285ebc0315d116bde9d9d *inst/CITATION
 acb36fe62ca1068e7c348924830ae47d *inst/bin/linux-helper
 488a5885a787b089656085cb86160a1f *inst/doc/batchtools.R
 e27016a48981bae562a75139b0a7364d *inst/doc/batchtools.Rmd
-220992d4645eb375891083cc6f9083f9 *inst/doc/batchtools.html
+ee9ffbd14d31795fc0f850b90a84ed40 *inst/doc/batchtools.html
 08063d98647aaaa1e2cb2f2972e761e2 *inst/templates/lsf-simple.tmpl
 d1e95d582ab1b45dc7c01f2ce22d77f2 *inst/templates/openlava-simple.tmpl
 aedaa713eacced98333e2cec782b5fc7 *inst/templates/sge-simple.tmpl
