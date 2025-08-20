@@ -9,22 +9,22 @@ if (identical(Sys.getenv("IN_PKGDOWN"), "true")) {
   fs::file_temp_push(fs::path(tmp_dir, letters))
 }
 
-## ---- message=FALSE-----------------------------------------------------------
+## ----message=FALSE------------------------------------------------------------
 reg = makeRegistry(NA)
 reg$cluster.functions = makeClusterFunctionsSocket(2)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  Sys.setenv(DEBUGME = "batchtools")
-#  library(batchtools)
+# Sys.setenv(DEBUGME = "batchtools")
+# library(batchtools)
 
 ## ----eval = FALSE-------------------------------------------------------------
-#  cluster.functions = makeClusterFunctionsInteractive()
+# cluster.functions = makeClusterFunctionsInteractive()
 
-## ---- eval = FALSE------------------------------------------------------------
-#  work.dir = "~"
-#  packages = union(packages, "checkmate")
+## ----eval = FALSE-------------------------------------------------------------
+# work.dir = "~"
+# packages = union(packages, "checkmate")
 
-## ---- message = FALSE---------------------------------------------------------
+## ----message = FALSE----------------------------------------------------------
 reg = makeRegistry(file.dir = NA, seed = 1)
 
 ## -----------------------------------------------------------------------------
@@ -53,11 +53,11 @@ waitForJobs()
 mean(sapply(1:10, loadResult))
 reduceResults(function(x, y) x + y) / 10
 
-## ---- R.options=list(batchtools.verbose=FALSE)--------------------------------
+## ----R.options=list(batchtools.verbose=FALSE)---------------------------------
 res = btlapply(rep(1e5, 10), piApprox)
 mean(unlist(res))
 
-## ---- message = FALSE---------------------------------------------------------
+## ----message = FALSE----------------------------------------------------------
 library(batchtools)
 reg = makeExperimentRegistry(file.dir = NA, seed = 1)
 
@@ -141,7 +141,7 @@ head(tab)
 tab[ratio == 0.67, list(mmce = mean(mce)),
   by = c("algorithm", "kernel", "epsilon", "ntree")]
 
-## ---- message = FALSE---------------------------------------------------------
+## ----message = FALSE----------------------------------------------------------
 library(batchtools)
 reg = makeRegistry(file.dir = NA, seed = 1)
 
@@ -174,7 +174,7 @@ getErrorMessages()
 tail(getLog(id = 9))
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  grepLogs(pattern = "simple", ignore.case = TRUE)
+# grepLogs(pattern = "simple", ignore.case = TRUE)
 
 ## ----echo=FALSE---------------------------------------------------------------
 knitr::include_graphics("function_overview.png", auto_pdf = TRUE)
